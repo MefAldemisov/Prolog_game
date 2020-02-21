@@ -87,6 +87,13 @@ generate_appropriate_step_id(X, Y, Can_pass, Step_id) :-
 make_step(Step_id, X, Y, X_new, Y_new) :- check_border(Step_id, X, Y, X_new, Y_new).
 
 search_human(X, Y, Step_x, Step_y, X_new, Y_new) :-
+    /**
+     * Make attempt to go one step further in the direction of a target
+     * (X, Y) - initial position
+     * (Stp_x, Step_y) - how does coordinate changes (direction)
+     * (X_new, Y_new) - where have you come
+     */
+
     X_n is X + Step_x,
     Y_n is Y + Step_y,
     X_n >= 0, Y_n >= 0, X_n < 20, Y_n < 20, \+ orc(X_n, Y_n),
@@ -105,11 +112,28 @@ make_pass(17, X, Y, X_new, Y_new) :- search_human(X, Y, -1, 0, X_new, Y_new).
 make_pass(18, X, Y, X_new, Y_new) :- search_human(X, Y, -1, 1, X_new, Y_new).
 
 update_path(X_new, Y_new, Step_id, Path, New_path) :-
+
+    /**
+     * Updates the list with the pass
+     */
+    
     Step_id < 5 ->
     append(Path, [[X_new, Y_new]], New_path);
     append(Path, [["P", X_new, Y_new]], New_path).
 
 find_path(X, Y, Can_pass, Path, Score, Total_path, Total_score) :-
+
+    /**
+     * Searches randomly for the next step and make it
+     * (X, Y) - initial position
+     * Can_pass is 1 -> the player haven't yet done any pass,
+     * Can_pass is 0 -> no pass can be done
+     * Path - list of all previous coordinates
+     * Score - the current amount of steps/movements
+     * Tota_path - the shortest path (to be returned)
+     * Total_score - the smallest score (to be returned)
+     */
+
     t(X, Y) ->
         (clone_list(Path, Total_path), 
         Total_score is Score);
@@ -129,14 +153,14 @@ new_best_score(A, B, C, A_path, B_path, C_path) :-
     C is B, clone_list(B_path, C_path).
 
 
-%print items separated by spaces
+% print items separated by spaces
 print_list_item([]).
 
 print_list_item([X|List]) :-
     format("~w ", [X]),
     print_list_item(List).
     
-% rint list line by line
+% print list line by line
 printlist([]).
     
 printlist([X|List]) :-
