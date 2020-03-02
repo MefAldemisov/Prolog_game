@@ -62,6 +62,12 @@ look_around(Step, X, Y, Check_orcs) :-
 %     look_around(1, 1, 1, 1), \+ look_around(2, 1, 1, 1), look_around(3, 1, 1, 1), look_around(4, 1, 1, 1),  
 %     look_around(1, 10, 4, 1), look_around(2, 10, 4, 1), look_around(3, 10, 4, 1), look_around(4, 10, 4, 1).
 
+
+check_close_touchdown(X, Y, 1) :- Y_new is Y + 1, t(X, Y_new).
+check_close_touchdown(X, Y, 2) :- X_new is X + 1, t(X_new, Y).
+check_close_touchdown(X, Y, 3) :- Y_new is Y - 1, t(X, Y_new).
+check_close_touchdown(X, Y, 4) :- X_new is X - 1, t(X_new, Y).
+
 appropriate_pass_id(X, Y, 11) :- look_around(1, X, Y, 0).
 appropriate_pass_id(X, Y, 12) :- look_around(1, X, Y, 0), look_around(2, X, Y, 0).
 appropriate_pass_id(X, Y, 13) :- look_around(2, X, Y, 0).
@@ -165,11 +171,11 @@ find_path(X, Y, Can_pass, Path, Score, Total_path, Total_score, Rand) :-
     t(X, Y) ->
         (clone_list(Path, Total_path), 
         Total_score is Score);
-    (
-    (Rand is 1 ->
-        generate_random_appropriate_step_id(X, Y, Can_pass, Step_id);
-        generate_appropriate_step_id(X, Y, Can_pass, Step_id)
-    ),
+    ((check_close_touchdown(X, Y, Step_id) -> correct;
+        (Rand is 1 ->
+            generate_random_appropriate_step_id(X, Y, Can_pass, Step_id);
+            generate_appropriate_step_id(X, Y, Can_pass, Step_id)
+    )),
     % somethin else
     (Step_id > 4 -> make_pass(Step_id, X, Y, X_new, Y_new);
     make_step(Step_id, X, Y, X_new, Y_new)), 
@@ -180,7 +186,7 @@ find_path(X, Y, Can_pass, Path, Score, Total_path, Total_score, Rand) :-
 
 
 new_best_score(A, B, C, A_path, B_path, C_path) :- 
-    format("Best: ~d ~d", [A, B] ),
+    format("Best: ~d ~d\n", [A, B] ),
     A < B -> C is A, clone_list(A_path, C_path);
     C is B, clone_list(B_path, C_path).
 

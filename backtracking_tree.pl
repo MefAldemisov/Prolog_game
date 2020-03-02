@@ -25,7 +25,8 @@ find_backtrack_path(X, Y, Can_pass, Path, Score, Total_path, Total_score) :-
             asserta(local_min(Score)), local_min(Nlm), format("Update ~w \n", [Nlm]));
             correct)
         );
-    (generate_appropriate_step_id(X, Y, Can_pass, Step_id),
+    ((check_close_touchdown(X, Y, Step_id) -> correct;
+    generate_appropriate_step_id(X, Y, Can_pass, Step_id)),
     % somethin else
     (Step_id > 4 -> make_pass(Step_id, X, Y, X_new, Y_new);
     make_step(Step_id, X, Y, X_new, Y_new)), 

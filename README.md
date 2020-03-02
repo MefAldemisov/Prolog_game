@@ -7,8 +7,9 @@
 ## TODO:
 
 - [x] Remove excessive methods from files
-- [ ] See the touchdown point
-- [ ] Show time meric only
+- [x] See the touchdown point
+- [ ] Optimize passing (easy field size change)
+- [ ] Show time meric only (simplify testing)
 - [ ] Change region of seeeing
 - [ ] Scale the system
 - [ ] Add 10 tests
