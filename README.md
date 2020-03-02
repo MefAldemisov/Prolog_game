@@ -9,7 +9,8 @@
 - [x] Remove excessive methods from files
 - [x] See the touchdown point
 - [x] Optimize passing (easy field size change)
-- [ ] Show time meric only (simplify testing)
+- [x] Make run file to test and measure all the requests
+- [x] Show time meric only (simplify testing)
 - [ ] Change region of seeeing
 - [ ] Scale the system
 - [ ] Add 10 tests

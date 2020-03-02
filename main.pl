@@ -188,7 +188,6 @@ find_path(X, Y, Can_pass, Path, Score, Total_path, Total_score, Rand) :-
 
 
 new_best_score(A, B, C, A_path, B_path, C_path) :- 
-    format("Best: ~d ~d\n", [A, B] ),
     A < B -> C is A, clone_list(A_path, C_path);
     C is B, clone_list(B_path, C_path).
 
