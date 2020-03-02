@@ -8,7 +8,7 @@
 
 - [x] Remove excessive methods from files
 - [x] See the touchdown point
-- [ ] Optimize passing (easy field size change)
+- [x] Optimize passing (easy field size change)
 - [ ] Show time meric only (simplify testing)
 - [ ] Change region of seeeing
 - [ ] Scale the system

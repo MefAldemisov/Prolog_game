@@ -39,10 +39,12 @@ human(3, 6).
 clone_list([],[]).
 clone_list([H|T],[H|Z]):- clone_list(T,Z).
 
-check_border(1, X, Y, X_new, Y_new) :- Y_new is Y + 1, Y_new < 10, X_new is X.
-check_border(2, X, Y, X_new, Y_new) :- X_new is X + 1, X_new < 10, Y_new is Y.
-check_border(3, X, Y, X_new, Y_new) :- Y_new is Y - 1, Y_new >= 0, X_new is X.
-check_border(4, X, Y, X_new, Y_new) :- X_new is X - 1, X_new >= 0, Y_new is Y.
+in_range(A) :- A >= 0, A < 10.
+
+check_border(1, X, Y, X_new, Y_new) :- Y_new is Y + 1, in_range(Y_new), X_new is X.
+check_border(2, X, Y, X_new, Y_new) :- X_new is X + 1, in_range(X_new), Y_new is Y.
+check_border(3, X, Y, X_new, Y_new) :- Y_new is Y - 1, in_range(Y_new), X_new is X.
+check_border(4, X, Y, X_new, Y_new) :- X_new is X - 1, in_range(X_new), Y_new is Y.
 
 no_orc(X_new, Y_new) :- \+ orc(X_new, Y_new).
 
@@ -130,7 +132,7 @@ search_human(X, Y, Step_x, Step_y, X_new, Y_new) :-
 
     X_n is X + Step_x,
     Y_n is Y + Step_y,
-    X_n >= 0, Y_n >= 0, X_n < 10, Y_n < 10, \+ orc(X_n, Y_n),
+    in_range(X_n), in_range(Y_n), \+ orc(X_n, Y_n),
     (   human(X_n, Y_n) ->  
     (   X_new is X_n, 
     	Y_new is Y_n);
