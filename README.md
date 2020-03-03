@@ -13,6 +13,6 @@
 - [x] Show time meric only (simplify testing)
 - [ ] Change region of seeeing
 - [ ] Scale the system
-- [ ] Add 10 tests
+- [x] Add 7 tests
 - [ ] Add unslvable test and test with touchdown (0, 0)
 
