@@ -30,6 +30,7 @@ find_backtrack_path(X, Y, Can_pass, Path, Score, Total_path, Total_score) :-
     % somethin else
     (Step_id > 4 -> make_pass(Step_id, X, Y, X_new, Y_new);
     make_step(Step_id, X, Y, X_new, Y_new)), 
+    not_in_list(X_new, Y_new, Path),
     update_path(X_new, Y_new, Step_id, Path, New_path),
     (Step_id > 4 -> New_can_pass is 0; New_can_pass is Can_pass),
     (human(X_new, Y_new) -> New_score is Score; New_score is Score + 1),

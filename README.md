@@ -13,6 +13,7 @@
 - [x] Show time meric only (simplify testing)
 - [ ] Change region of seeeing
 - [ ] Scale the system
+- [ ] Check, how does passing happends(when it is the only correct answer)
 - [x] Add 7 tests
 - [ ] Add unslvable test and test with touchdown (0, 0)
 

@@ -1,25 +1,28 @@
 /*Some euristics: Step_id [1;4], Pass_id [11; 18]*/
 :- use_module(library(clpfd)).
 :- style_check(-singleton).
-%library(lists). library(random),
-% t(X, Y).
-% orc(X, Y).
-% human(X, Y).
-t(1, 2).
-orc(2, 1).
-correct.
-human(2, 4).
+:- include(test1).
+:- discontiguous orc/2.
+:- discontiguous human/2.
+:- discontiguous t/2.
 
-human(1, 9).
-human(3, 0).
-human(0, 2).
-human(0, 3).
-human(5, 5).
-human(9, 9).
-human(7, 7).
-human(0, 7).
-human(2, 7).
-human(3, 6).
+correct.
+
+t(-1, -1).
+human(-1, -1).
+orc(-1, -1).
+
+% t(1, 1).
+% human(1, 9).
+% human(3, 0).
+% human(0, 2).
+% human(0, 3).
+% human(5, 5).
+% human(9, 9).
+% human(7, 7).
+% human(0, 7).
+% human(2, 7).
+% human(3, 6).
 
 % human(1, 9).
 % human(3, 0).
@@ -38,6 +41,12 @@ human(3, 6).
 
 clone_list([],[]).
 clone_list([H|T],[H|Z]):- clone_list(T,Z).
+
+in_list(X, [X|L]).
+in_list(X, [A|L]):- in_list(X, L).
+
+not_in_list(X, Y, Path) :- \+ in_list([X, Y], Path), \+ in_list(['P', X, Y], Path).
+
 
 in_range(A) :- A >= 0, A < 10.
 
@@ -98,8 +107,8 @@ generate_random_appropriate_step_id(X, Y, Can_pass, Step_id) :-
      * Can_pass is 1 -> can pass else - cannot
      * Step_id - return value
      */
-	findall(S, look_around(S, 0, 0, 1), List_of_steps),
-    (Can_pass is 1 -> append(List_of_steps, [5], List_of_all)),
+    findall(S, look_around(S, X, Y, 1), List_of_steps),
+    (Can_pass is 1 -> append(List_of_steps, [5], List_of_all); clone_list(List_of_steps, List_of_all)),
     random_member(Step, List_of_all),
     (Step is 5 -> 
     	generate_appropriate_pass_id(X, Y, Step_id); 
@@ -112,8 +121,8 @@ generate_appropriate_step_id(X, Y, Can_pass, Step_id) :-
      * Can_pass is 1 -> can pass else - cannot
      * Step_id - return value
      */
-    findall(S, look_around(S, 0, 0, 1), List_of_steps),
-    (Can_pass is 1 -> append(List_of_steps, [5], List_of_all)),
+    findall(S, look_around(S, X, Y, 1), List_of_steps),
+    (Can_pass is 1 -> append(List_of_steps, [5], List_of_all); clone_list(List_of_steps, List_of_all)),
     member(Step, List_of_all),
     (Step is 5 -> 
         appropriate_pass_id(X, Y, Step_id); 
@@ -132,7 +141,7 @@ search_human(X, Y, Step_x, Step_y, X_new, Y_new) :-
 
     X_n is X + Step_x,
     Y_n is Y + Step_y,
-    in_range(X_n), in_range(Y_n), \+ orc(X_n, Y_n),
+    in_range(X_n), in_range(Y_n), no_orc(X_n, Y_n),
     (   human(X_n, Y_n) ->  
     (   X_new is X_n, 
     	Y_new is Y_n);
@@ -169,18 +178,20 @@ find_path(X, Y, Can_pass, Path, Score, Total_path, Total_score, Rand) :-
      * Tota_path - the shortest path (to be returned)
      * Total_score - the smallest score (to be returned)
      */
-
+    
     t(X, Y) ->
         (clone_list(Path, Total_path), 
         Total_score is Score);
-    ((check_close_touchdown(X, Y, Step_id) -> correct;
+    (    
+    (check_close_touchdown(X, Y, Step_id) -> correct;
         (Rand is 1 ->
-            generate_random_appropriate_step_id(X, Y, Can_pass, Step_id);
+            (generate_random_appropriate_step_id(X, Y, Can_pass, Step_id));
             generate_appropriate_step_id(X, Y, Can_pass, Step_id)
     )),
     % somethin else
     (Step_id > 4 -> make_pass(Step_id, X, Y, X_new, Y_new);
-    make_step(Step_id, X, Y, X_new, Y_new)), 
+    make_step(Step_id, X, Y, X_new, Y_new)),
+    not_in_list(X_new, Y_new, Path),
     update_path(X_new, Y_new, Step_id, Path, New_path),
     (Step_id > 4 -> New_can_pass is 0; New_can_pass is Can_pass),
     (human(X_new, Y_new) -> New_score is Score; New_score is Score + 1),
@@ -226,9 +237,9 @@ get_path_with_min(P, M, [[A, B]|L]) :-
 % ramdom search
 
 random_path(100, Score, Best, Path) :-
-    format("\n\nTotal score is ~w", [Score]),
+    format("Total score is ~w", [Score]),
     writeln("\nNew path: " ), printlist(Path),
-    Best is Score.
+    Best is Score, !.
 
 random_path(Itteration, Score, Best, Path) :-
     Itteration < 100,
