@@ -1,7 +1,7 @@
 /*Some euristics: Step_id [1;4], Pass_id [11; 18]*/
 :- use_module(library(clpfd)).
 :- style_check(-singleton).
-:- include(test1).
+:- include(test9).
 :- discontiguous orc/2.
 :- discontiguous human/2.
 :- discontiguous t/2.
@@ -11,33 +11,6 @@ correct.
 t(-1, -1).
 human(-1, -1).
 orc(-1, -1).
-
-% t(1, 1).
-% human(1, 9).
-% human(3, 0).
-% human(0, 2).
-% human(0, 3).
-% human(5, 5).
-% human(9, 9).
-% human(7, 7).
-% human(0, 7).
-% human(2, 7).
-% human(3, 6).
-
-% human(1, 9).
-% human(3, 0).
-% human(0, 2).
-% human(0, 3).
-% human(5, 5).
-% human(10, 10).
-% human(9, 9).
-% human(10, 9).
-% human(8, 11).
-% human(7, 7).
-% human(0, 7).
-% human(2, 7).
-% human(3, 6).
-
 
 clone_list([],[]).
 clone_list([H|T],[H|Z]):- clone_list(T,Z).
@@ -237,9 +210,12 @@ get_path_with_min(P, M, [[A, B]|L]) :-
 % ramdom search
 
 random_path(100, Score, Best, Path) :-
-    format("Total score is ~w", [Score]),
-    writeln("\nNew path: " ), printlist(Path),
-    Best is Score, !.
+    length(Path, N),
+    (N > 0 ->
+    (format("Total score is ~w", [Score]),
+    writeln("\nNew path: " ), printlist(Path));
+    writeln("Not sucseed")), 
+    Best is Score.
 
 random_path(Itteration, Score, Best, Path) :-
     Itteration < 100,

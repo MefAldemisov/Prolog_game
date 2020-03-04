@@ -45,8 +45,9 @@ backtrack_tree_path(Best_score, Path) :-
     retractall(local_min(_)),
     asserta(local_min(10000)),
     local_min(Lm),
-    findall([New_path, New_score], find_backtrack_path(0, 0, 1, [], 0, New_path, New_score), Results),
-    list_min(Results, Min),
-    get_path_with_min(Path, Min, Results),
+    findall([New_path, New_score], find_backtrack_path(0, 0, 1, [], 0, New_path, New_score), Results) ->
+    (list_min(Results, Min)->
+    (get_path_with_min(Path, Min, Results),
     format("Total score is ~w", [Min]),
-    writeln("\nNew path: " ), printlist(Path).
+    writeln("\nNew path: " ), printlist(Path));
+    writeln("Not sucseed")).
