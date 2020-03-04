@@ -1,7 +1,7 @@
 /*Some euristics: Step_id [1;4], Pass_id [11; 18]*/
 :- use_module(library(clpfd)).
 :- style_check(-singleton).
-:- include(test9).
+:- include(test2).
 :- discontiguous orc/2.
 :- discontiguous human/2.
 :- discontiguous t/2.
@@ -21,7 +21,7 @@ in_list(X, [A|L]):- in_list(X, L).
 not_in_list(X, Y, Path) :- \+ in_list([X, Y], Path), \+ in_list(['P', X, Y], Path).
 
 
-in_range(A) :- A >= 0, A < 10.
+in_range(A) :- A >= 0, A < 7.
 
 check_border(1, X, Y, X_new, Y_new) :- Y_new is Y + 1, in_range(Y_new), X_new is X.
 check_border(2, X, Y, X_new, Y_new) :- X_new is X + 1, in_range(X_new), Y_new is Y.
@@ -139,7 +139,7 @@ update_path(X_new, Y_new, Step_id, Path, New_path) :-
     append(Path, [[X_new, Y_new]], New_path);
     append(Path, [["P", X_new, Y_new]], New_path).
 
-find_path(X, Y, Can_pass, Path, Score, Total_path, Total_score, Rand) :-
+find_path(X, Y, Can_pass, Path, Score, Total_path, Total_score) :-
 
     /**
      * Searches randomly for the next step and make it
@@ -155,12 +155,10 @@ find_path(X, Y, Can_pass, Path, Score, Total_path, Total_score, Rand) :-
     t(X, Y) ->
         (clone_list(Path, Total_path), 
         Total_score is Score);
-    (    
+    (   
     (check_close_touchdown(X, Y, Step_id) -> correct;
-        (Rand is 1 ->
-            (generate_random_appropriate_step_id(X, Y, Can_pass, Step_id));
-            generate_appropriate_step_id(X, Y, Can_pass, Step_id)
-    )),
+        generate_random_appropriate_step_id(X, Y, Can_pass, Step_id)
+    ),
     % somethin else
     (Step_id > 4 -> make_pass(Step_id, X, Y, X_new, Y_new);
     make_step(Step_id, X, Y, X_new, Y_new)),
@@ -168,7 +166,7 @@ find_path(X, Y, Can_pass, Path, Score, Total_path, Total_score, Rand) :-
     update_path(X_new, Y_new, Step_id, Path, New_path),
     (Step_id > 4 -> New_can_pass is 0; New_can_pass is Can_pass),
     (human(X_new, Y_new) -> New_score is Score; New_score is Score + 1),
-    find_path(X_new, Y_new, New_can_pass, New_path, New_score, Total_path, Total_score, Rand)). 
+    find_path(X_new, Y_new, New_can_pass, New_path, New_score, Total_path, Total_score)). 
 
 
 new_best_score(A, B, C, A_path, B_path, C_path) :- 
@@ -220,7 +218,7 @@ random_path(100, Score, Best, Path) :-
 random_path(Itteration, Score, Best, Path) :-
     Itteration < 100,
     Next_itr is Itteration + 1,
-    (find_path(0, 0, 1, [], 0, New_path, New_score, 1)->
+    (find_path(0, 0, 1, [], 0, New_path, New_score)->
             (new_best_score(Score, New_score, Nbs, Path, New_path, Best_path),
             random_path(Next_itr, Nbs, New_best, Best_path), Best is New_best);
         random_path(Next_itr, Score, New_best, Path), Best is New_best).
