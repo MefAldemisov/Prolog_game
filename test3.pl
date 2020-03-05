@@ -1,5 +1,5 @@
-t(8, 7).
+t(4, 5).
 
-human(0, 7).
-human(2, 1).
-human(1, 4).
+human(0, 5).
+human(4, 0).
+human(4, 4).

@@ -47,4 +47,4 @@ tree_path(Best_score, Path) :-
     % get_path_with_min(Path, Min, Results),
     format("Total score is ~w", [Result]),
     writeln("\nNew path: " ), printlist(Path));
-    writeln("Not sucseed").
+    writeln("Not sucseed"), !.

@@ -1,7 +1,7 @@
 /*Some euristics: Step_id [1;4], Pass_id [11; 18]*/
 :- use_module(library(clpfd)).
 :- style_check(-singleton).
-:- include(test2).
+:- include(test10).
 :- discontiguous orc/2.
 :- discontiguous human/2.
 :- discontiguous t/2.
@@ -21,7 +21,7 @@ in_list(X, [A|L]):- in_list(X, L).
 not_in_list(X, Y, Path) :- \+ in_list([X, Y], Path), \+ in_list(['P', X, Y], Path).
 
 
-in_range(A) :- A >= 0, A < 7.
+in_range(A) :- A >= 0, A < 6.
 
 check_border(1, X, Y, X_new, Y_new) :- Y_new is Y + 1, in_range(Y_new), X_new is X.
 check_border(2, X, Y, X_new, Y_new) :- X_new is X + 1, in_range(X_new), Y_new is Y.
@@ -52,15 +52,53 @@ check_close_touchdown(X, Y, 2) :- X_new is X + 1, t(X_new, Y).
 check_close_touchdown(X, Y, 3) :- Y_new is Y - 1, t(X, Y_new).
 check_close_touchdown(X, Y, 4) :- X_new is X - 1, t(X_new, Y).
 
-appropriate_pass_id(X, Y, 11) :- look_around(1, X, Y, 0).
+% loook 2
+check_close_touchdown(X, Y, 1) :- Y_new is Y + 2, t(X, Y_new).
+check_close_touchdown(X, Y, 2) :- X_new is X + 2, t(X_new, Y).
+check_close_touchdown(X, Y, 3) :- Y_new is Y - 2, t(X, Y_new).
+check_close_touchdown(X, Y, 4) :- X_new is X - 2, t(X_new, Y).
+
+% look 1
+% appropriate_pass_id(X, Y, 11) :- look_around(1, X, Y, 0).
+% appropriate_pass_id(X, Y, 12) :- look_around(1, X, Y, 0), look_around(2, X, Y, 0).
+% appropriate_pass_id(X, Y, 13) :- look_around(2, X, Y, 0).
+% appropriate_pass_id(X, Y, 14) :- look_around(2, X, Y, 0), look_around(3, X, Y, 0).
+% appropriate_pass_id(X, Y, 15) :- look_around(3, X, Y, 0).
+% appropriate_pass_id(X, Y, 16) :- look_around(3, X, Y, 0), look_around(4, X, Y, 0).
+% appropriate_pass_id(X, Y, 17) :- look_around(4, X, Y, 0).
+% appropriate_pass_id(X, Y, 18) :- look_around(4, X, Y, 0), look_around(1, X, Y, 0).
+
+% look 2
+appropriate_pass_id(X, Y, 11) :- 
+    look_around(1, X, Y, 1), 
+    Y_n is Y + 1, 
+    look_around(1, X, Y_n, 1).
+
 appropriate_pass_id(X, Y, 12) :- look_around(1, X, Y, 0), look_around(2, X, Y, 0).
-appropriate_pass_id(X, Y, 13) :- look_around(2, X, Y, 0).
+
+appropriate_pass_id(X, Y, 13) :-
+    look_around(2, X, Y, 1), 
+    X_n is X + 1, 
+    look_around(2, X_n, Y, 1).
+
 appropriate_pass_id(X, Y, 14) :- look_around(2, X, Y, 0), look_around(3, X, Y, 0).
-appropriate_pass_id(X, Y, 15) :- look_around(3, X, Y, 0).
+
+appropriate_pass_id(X, Y, 15) :- 
+    look_around(3, X, Y, 1),
+    Y_n is Y - 1, 
+    look_around(3, X, Y_n, 1).
+
 appropriate_pass_id(X, Y, 16) :- look_around(3, X, Y, 0), look_around(4, X, Y, 0).
-appropriate_pass_id(X, Y, 17) :- look_around(4, X, Y, 0).
+
+appropriate_pass_id(X, Y, 17) :- 
+    look_around(4, X, Y, 1),
+    X_n is X - 1, 
+    look_around(4, X_n, Y, 1).
+
 appropriate_pass_id(X, Y, 18) :- look_around(4, X, Y, 0), look_around(1, X, Y, 0).
-    
+
+
+
 generate_appropriate_pass_id(X, Y, P) :-
 
     /**
