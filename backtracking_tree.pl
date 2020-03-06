@@ -2,7 +2,6 @@
 :- style_check(-singleton).
 :- [main].
 :- dynamic local_min/1.
-%library(lists). library(random),
 
 find_backtrack_path(X, Y, Can_pass, Path, Score, Total_path, Total_score) :-
 
@@ -22,8 +21,8 @@ find_backtrack_path(X, Y, Can_pass, Path, Score, Total_path, Total_score) :-
         Total_score is Score, local_min(Lm),
         (Lm > Score -> 
             (retractall(local_min(_)), 
-            asserta(local_min(Score)), local_min(Nlm));
-            correct)
+            asserta(local_min(Score)));
+            correct), !
         );
     ((check_close_touchdown(X, Y, Step_id) -> correct;
     generate_appropriate_step_id(X, Y, Can_pass, Step_id)),
@@ -39,15 +38,13 @@ find_backtrack_path(X, Y, Can_pass, Path, Score, Total_path, Total_score) :-
 
 
 backtrack_tree_path(Best_score, Path) :-
-    % Itteration < 100,
-    % format("New ITTERATION ~d \n" , [Itteration]),
     % Next_itr is Itteration + 1,
     retractall(local_min(_)),
     asserta(local_min(10000)),
     local_min(Lm),
-    findall([New_path, New_score], find_backtrack_path(0, 0, 1, [], 0, New_path, New_score), Results) ->
+    (findall([New_path, New_score], find_backtrack_path(0, 0, 1, [], 0, New_path, New_score), Results) ->
     (list_min(Results, Min)->
     (get_path_with_min(Path, Min, Results),
     format("Total score is ~w", [Min]),
     writeln("\nNew path: " ), printlist(Path));
-    writeln("Not sucseed")).
+    writeln("Not sucseed"))).

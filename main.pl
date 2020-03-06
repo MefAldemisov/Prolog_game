@@ -1,21 +1,22 @@
 :- use_module(library(clpfd)).
-:- style_check(-singleton).
-:- include(tests/test20).
-:- discontiguous orc/2.
-:- discontiguous human/2.
-:- discontiguous t/2.
+% :- style_check(-singleton).
+:- include(tests/test2).
+:- (discontiguous orc/2).
+:- (discontiguous human/2).
+:- (discontiguous t/2).
 
+vision(2).
 correct.
 
 t(-1, -1).
 human(-1, -1).
 orc(-1, -1).
 
-clone_list([],[]).
+clone_list([], []).
 clone_list([H|T],[H|Z]):- clone_list(T,Z).
 
-in_list(X, [X|L]).
-in_list(X, [A|L]):- in_list(X, L).
+in_list(X, [X|_]).
+in_list(X, [_|L]):- in_list(X, L).
 
 not_in_list(X, Y, Path) :- \+ in_list([X, Y], Path), \+ in_list(['P', X, Y], Path).
 
@@ -46,57 +47,73 @@ look_around(Step, X, Y, Check_orcs) :-
 %     look_around(1, 10, 4, 1), look_around(2, 10, 4, 1), look_around(3, 10, 4, 1), look_around(4, 10, 4, 1).
 
 
-check_close_touchdown(X, Y, 1) :- Y_new is Y + 1, t(X, Y_new).
-check_close_touchdown(X, Y, 2) :- X_new is X + 1, t(X_new, Y).
-check_close_touchdown(X, Y, 3) :- Y_new is Y - 1, t(X, Y_new).
-check_close_touchdown(X, Y, 4) :- X_new is X - 1, t(X_new, Y).
+check_close_touchdown1(X, Y, 1) :- Y_new is Y + 1, t(X, Y_new).
+check_close_touchdown1(X, Y, 2) :- X_new is X + 1, t(X_new, Y).
+check_close_touchdown1(X, Y, 3) :- Y_new is Y - 1, t(X, Y_new).
+check_close_touchdown1(X, Y, 4) :- X_new is X - 1, t(X_new, Y).
 
 % loook 2
-check_close_touchdown(X, Y, 1) :- Y_new is Y + 2, t(X, Y_new).
-check_close_touchdown(X, Y, 2) :- X_new is X + 2, t(X_new, Y).
-check_close_touchdown(X, Y, 3) :- Y_new is Y - 2, t(X, Y_new).
-check_close_touchdown(X, Y, 4) :- X_new is X - 2, t(X_new, Y).
+
+check_close_touchdown2(X, Y, 1) :- Y_new is Y + 1, t(X, Y_new).
+check_close_touchdown2(X, Y, 2) :- X_new is X + 1, t(X_new, Y).
+check_close_touchdown2(X, Y, 3) :- Y_new is Y - 1, t(X, Y_new).
+check_close_touchdown2(X, Y, 4) :- X_new is X - 1, t(X_new, Y).
+check_close_touchdown2(X, Y, 1) :- Y_new is Y + 2, t(X, Y_new).
+check_close_touchdown2(X, Y, 2) :- X_new is X + 2, t(X_new, Y).
+check_close_touchdown2(X, Y, 3) :- Y_new is Y - 2, t(X, Y_new).
+check_close_touchdown2(X, Y, 4) :- X_new is X - 2, t(X_new, Y).
+
+check_close_touchdown(X, Y, N) :-
+    vision(V), 
+    (V is 1 -> 
+        check_close_touchdown1(X, Y, N);
+        check_close_touchdown2(X, Y, N)
+    ).
 
 % look 1
-% appropriate_pass_id(X, Y, 11) :- look_around(1, X, Y, 0).
-% appropriate_pass_id(X, Y, 12) :- look_around(1, X, Y, 0), look_around(2, X, Y, 0).
-% appropriate_pass_id(X, Y, 13) :- look_around(2, X, Y, 0).
-% appropriate_pass_id(X, Y, 14) :- look_around(2, X, Y, 0), look_around(3, X, Y, 0).
-% appropriate_pass_id(X, Y, 15) :- look_around(3, X, Y, 0).
-% appropriate_pass_id(X, Y, 16) :- look_around(3, X, Y, 0), look_around(4, X, Y, 0).
-% appropriate_pass_id(X, Y, 17) :- look_around(4, X, Y, 0).
-% appropriate_pass_id(X, Y, 18) :- look_around(4, X, Y, 0), look_around(1, X, Y, 0).
+appropriate_pass_id1(X, Y, 11) :- look_around(1, X, Y, 0).
+appropriate_pass_id1(X, Y, 12) :- look_around(1, X, Y, 0), look_around(2, X, Y, 0).
+appropriate_pass_id1(X, Y, 13) :- look_around(2, X, Y, 0).
+appropriate_pass_id1(X, Y, 14) :- look_around(2, X, Y, 0), look_around(3, X, Y, 0).
+appropriate_pass_id1(X, Y, 15) :- look_around(3, X, Y, 0).
+appropriate_pass_id1(X, Y, 16) :- look_around(3, X, Y, 0), look_around(4, X, Y, 0).
+appropriate_pass_id1(X, Y, 17) :- look_around(4, X, Y, 0).
+appropriate_pass_id1(X, Y, 18) :- look_around(4, X, Y, 0), look_around(1, X, Y, 0).
 
 % look 2
-appropriate_pass_id(X, Y, 11) :- 
+appropriate_pass_id2(X, Y, 11) :- 
     look_around(1, X, Y, 1), 
     Y_n is Y + 1, 
     look_around(1, X, Y_n, 1).
 
-appropriate_pass_id(X, Y, 12) :- look_around(1, X, Y, 0), look_around(2, X, Y, 0).
+appropriate_pass_id2(X, Y, 12) :- look_around(1, X, Y, 0), look_around(2, X, Y, 0).
 
-appropriate_pass_id(X, Y, 13) :-
+appropriate_pass_id2(X, Y, 13) :-
     look_around(2, X, Y, 1), 
     X_n is X + 1, 
     look_around(2, X_n, Y, 1).
 
-appropriate_pass_id(X, Y, 14) :- look_around(2, X, Y, 0), look_around(3, X, Y, 0).
+appropriate_pass_id2(X, Y, 14) :- look_around(2, X, Y, 0), look_around(3, X, Y, 0).
 
-appropriate_pass_id(X, Y, 15) :- 
+appropriate_pass_id2(X, Y, 15) :- 
     look_around(3, X, Y, 1),
     Y_n is Y - 1, 
     look_around(3, X, Y_n, 1).
 
-appropriate_pass_id(X, Y, 16) :- look_around(3, X, Y, 0), look_around(4, X, Y, 0).
+appropriate_pass_id2(X, Y, 16) :- look_around(3, X, Y, 0), look_around(4, X, Y, 0).
 
-appropriate_pass_id(X, Y, 17) :- 
+appropriate_pass_id2(X, Y, 17) :- 
     look_around(4, X, Y, 1),
     X_n is X - 1, 
     look_around(4, X_n, Y, 1).
 
-appropriate_pass_id(X, Y, 18) :- look_around(4, X, Y, 0), look_around(1, X, Y, 0).
+appropriate_pass_id2(X, Y, 18) :- look_around(4, X, Y, 0), look_around(1, X, Y, 0).
 
-
+appropriate_pass_id(X, Y, N) :-
+    vision(V),
+    (V is 1 -> 
+        appropriate_pass_id1(X, Y, N);
+        appropriate_pass_id2(X, Y, N)).
 
 generate_appropriate_pass_id(X, Y, P) :-
 
@@ -191,7 +208,7 @@ find_path(X, Y, Can_pass, Path, Score, Total_path, Total_score) :-
     
     t(X, Y) ->
         (clone_list(Path, Total_path), 
-        Total_score is Score);
+        Total_score is Score, !);
     (   
     (check_close_touchdown(X, Y, Step_id) -> correct;
         generate_random_appropriate_step_id(X, Y, Can_pass, Step_id)
@@ -226,16 +243,18 @@ printlist([X|List]) :-
     printlist(List).
 
 % find the list(path) + length which is the shortest
-list_min([[P, S]|Ls], Min) :-
+
+list_min([[_, S]|Ls], Min) :-
     list_min(Ls, S, Min).
 
 list_min([], Min, Min).
-list_min([[P, S]|Ls], Min0, Min) :-
+
+list_min([[_, S]|Ls], Min0, Min) :-
     Min1 is min(S, Min0),
     list_min(Ls, Min1, Min).
 
 % find the shortest path
-get_path_with_min(P, M, []) :-
+get_path_with_min(_, _, []) :-
     fail.
 get_path_with_min(P, M, [[A, B]|L]) :-
     (   M is B ->   
@@ -245,11 +264,10 @@ get_path_with_min(P, M, [[A, B]|L]) :-
 % ramdom search
 
 random_path(100, Score, Best, Path) :-
-    length(Path, N),
-    (N > 0 ->
+    (Score < 100 ->
     (format("Total score is ~w", [Score]),
     writeln("\nNew path: " ), printlist(Path));
-    writeln("Not sucseed")), 
+    writeln("Not sucseed")),
     Best is Score.
 
 random_path(Itteration, Score, Best, Path) :-

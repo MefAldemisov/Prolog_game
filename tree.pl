@@ -17,7 +17,7 @@ find_tree_path(X, Y, Can_pass, Path, Score, Total_path, Total_score) :-
     
     t(X, Y) ->
         (clone_list(Path, Total_path), 
-        Total_score is Score);
+        Total_score is Score, !);
     (    
     (check_close_touchdown(X, Y, Step_id) -> 
         correct;
@@ -30,21 +30,14 @@ find_tree_path(X, Y, Can_pass, Path, Score, Total_path, Total_score) :-
     update_path(X_new, Y_new, Step_id, Path, New_path),
     (Step_id > 4 -> New_can_pass is 0; New_can_pass is Can_pass),
     (human(X_new, Y_new) -> New_score is Score; New_score is Score + 1),
-
     find_tree_path(X_new, Y_new, New_can_pass, New_path, New_score, Total_path, Total_score)). 
 
 
-
-
 tree_path(Best_score, Path) :-
-    % findall([New_path, New_score],
-    aggregate_all(min(New_score), find_tree_path(0, 0, 1, [], 0, New_path, New_score), Result) ->
-    (find_tree_path(0, 0, 1, [], 0, Path, Result),
-    % Results),
-    % length(Results, N),
-    % writeln(N),
-    % list_min(Results, Min),
-    % get_path_with_min(Path, Min, Results),
-    format("Total score is ~w", [Result]),
-    writeln("\nNew path: " ), printlist(Path));
-    writeln("Not sucseed"), !.
+    findall([New_path, New_score], 
+         find_tree_path(0, 0, 1, [], 0, New_path, New_score), Results),
+    (list_min(Results, Min) ->
+    ( get_path_with_min(Path, Min, Results),
+    format("Total score is ~w", [Min]),
+    writeln("\nNew path: " ), printlist(Path), Best_score is Min);
+    writeln("Not sucseed")).

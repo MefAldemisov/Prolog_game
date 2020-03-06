@@ -4,17 +4,11 @@
 2. Backtracking
 3. Some other algorithm (A*, Simulated Annealing)
 
-## TODO:
+## How to use.
 
-- [x] Remove excessive methods from files
-- [x] See the touchdown point
-- [x] Optimize passing (easy field size change)
-- [x] Make run file to test and measure all the requests
-- [x] Show time meric only (simplify testing)
-- [ ] Change region of seeeing
-- [x] Modify the tree algorithm 
-- [x] Check, how does passing happends(when it is the only correct answer)
-- [x] Add 7 tests
-- [x] Add unsolvable test and test with touchdown (0, 0)
-- [ ] Change condition rof random false
+1. Run `swipl --stack_limit=10G` 
+2. Comile everything `[run].`
+3. Execute `go.`
 
+- To change test number, go to the mail file, line **3** (now `:- include(tests/test20).`), and change the index of the test
+- To change the region of vision, change `vision(1)` on `vision(2)`, line **8**
