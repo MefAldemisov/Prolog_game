@@ -22,7 +22,7 @@ find_backtrack_path(X, Y, Can_pass, Path, Score, Total_path, Total_score) :-
         Total_score is Score, local_min(Lm),
         (Lm > Score -> 
             (retractall(local_min(_)), 
-            asserta(local_min(Score)), local_min(Nlm), format("Update ~w \n", [Nlm]));
+            asserta(local_min(Score)), local_min(Nlm));
             correct)
         );
     ((check_close_touchdown(X, Y, Step_id) -> correct;

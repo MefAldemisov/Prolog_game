@@ -1,7 +1,6 @@
-/*Some euristics: Step_id [1;4], Pass_id [11; 18]*/
 :- use_module(library(clpfd)).
 :- style_check(-singleton).
-:- include(test10).
+:- include(tests/test20).
 :- discontiguous orc/2.
 :- discontiguous human/2.
 :- discontiguous t/2.
